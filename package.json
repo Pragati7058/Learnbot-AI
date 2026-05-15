@@ -1,0 +1,20 @@
+{
+  "name": "learnbot-main",
+  "version": "1.0.0",
+  "description": "A full-stack production-ready AI study assistant built with React + Node.js + MongoDB.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pragati7058/learnbot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pragati7058/learnbot/issues"
+  },
+  "homepage": "https://github.com/Pragati7058/learnbot#readme"
+}

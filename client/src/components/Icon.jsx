@@ -106,12 +106,17 @@ const paths = {
   ),
   logo: (
     <>
+      {/* antenna */}
       <line x1="12" y1="2" x2="12" y2="5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
       <circle cx="12" cy="1.5" r="1.5" fill="currentColor"/>
+      {/* head */}
       <rect x="4" y="5" width="16" height="11" rx="3" stroke="currentColor" strokeWidth="2" fill="none"/>
+      {/* eyes */}
       <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
       <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+      {/* mouth */}
       <line x1="9" y1="13" x2="15" y2="13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+      {/* legs */}
       <line x1="9" y1="16" x2="9" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
       <line x1="15" y1="16" x2="15" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
     </>
@@ -136,4 +141,3 @@ export default function Icon({ name, size = 16, style = {} }) {
     </svg>
   );
 }
-

@@ -89,7 +89,7 @@ function Brand() {
         <Icon name="logo" size={24} />
       </div>
       <div style={{ fontSize: 26, fontWeight: 800, background: "linear-gradient(135deg,#a5b4fc,#c4b5fd,#f0abfc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-        LearnBot
+        learnbot
       </div>
       <div style={{ fontSize: 12, color: "rgba(165,180,252,.45)", marginTop: 4, letterSpacing: 1 }}>
         AI Study Assistant for Engineers
