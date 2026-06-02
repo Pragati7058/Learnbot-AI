@@ -6,17 +6,17 @@ function InlineFormat({ text }) {
     <>
       {parts.map((p, i) => {
         if (p.startsWith("**") && p.endsWith("**"))
-          return <strong key={i} style={{ color: "#a5b4fc", fontWeight: 700 }}>{p.slice(2, -2)}</strong>;
+          return <strong key={i} style={{ color: "var(--text-primary)", fontWeight: 700 }}>{p.slice(2, -2)}</strong>;
         if (p.startsWith("`") && p.endsWith("`"))
           return (
             <code key={i} style={{
-              background: "rgba(99,102,241,.18)",
-              border: "1px solid rgba(99,102,241,.28)",
+              background: "var(--card-bg-deep)",
+              border: "1px solid var(--card-border)",
               padding: "1px 6px",
               borderRadius: 5,
               fontSize: "0.88em",
               fontFamily: "'JetBrains Mono', monospace",
-              color: "#a5b4fc",
+              color: "var(--text-primary)",
             }}>{p.slice(1, -1)}</code>
           );
         return p;
@@ -95,7 +95,7 @@ export default function Markdown({ text }) {
     return (
       <ul key={`list-${key}`} style={{ paddingLeft: 20, margin: "8px 0" }}>
         {items.map((item, i) => (
-          <li key={i} style={{ color: "#94a3b8", margin: "4px 0", lineHeight: 1.75 }}>
+          <li key={i} style={{ color: "var(--text-secondary)", margin: "4px 0", lineHeight: 1.75 }}>
             <InlineFormat text={item} />
           </li>
         ))}
@@ -132,19 +132,19 @@ export default function Markdown({ text }) {
     // Headings
     if (ln.startsWith("# ")) {
       output.push(
-        <h1 key={i} style={{ fontSize: 19, fontWeight: 700, color: "#a5b4fc", margin: "16px 0 8px", paddingBottom: 8, borderBottom: "1px solid rgba(99,102,241,.2)", lineHeight: 1.4 }}>
+        <h1 key={i} style={{ fontSize: 19, fontWeight: 700, color: "var(--text-primary)", margin: "16px 0 8px", paddingBottom: 8, borderBottom: "1px solid var(--card-border)", lineHeight: 1.4 }}>
           {ln.slice(2)}
         </h1>
       );
     } else if (ln.startsWith("## ")) {
       output.push(
-        <h2 key={i} style={{ fontSize: 15.5, fontWeight: 700, color: "#c4b5fd", margin: "14px 0 6px", lineHeight: 1.4 }}>
+        <h2 key={i} style={{ fontSize: 15.5, fontWeight: 700, color: "var(--text-primary)", margin: "14px 0 6px", lineHeight: 1.4 }}>
           {ln.slice(3)}
         </h2>
       );
     } else if (ln.startsWith("### ")) {
       output.push(
-        <h3 key={i} style={{ fontSize: 14, fontWeight: 600, color: "#67e8f9", margin: "11px 0 5px", lineHeight: 1.4 }}>
+        <h3 key={i} style={{ fontSize: 14, fontWeight: 600, color: "var(--text-primary)", margin: "11px 0 5px", lineHeight: 1.4 }}>
           {ln.slice(4)}
         </h3>
       );
@@ -154,7 +154,7 @@ export default function Markdown({ text }) {
       output.push(
         <p key={i} style={{
           margin: "5px 0",
-          color: "#cbd5e1",
+          color: "var(--text-primary)",
           lineHeight: 1.85,
           fontSize: 14,
           textAlign: "justify",

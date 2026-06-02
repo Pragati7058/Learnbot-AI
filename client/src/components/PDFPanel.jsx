@@ -1,4 +1,12 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import * as pdfjsLib from "pdfjs-dist";
+import "pdfjs-dist/build/pdf.worker.min.mjs";
+import { useAuth } from "../context/AuthContext";
+import { callAI } from "../utils/api";
+import { PROMPTS } from "../utils/prompts";
+import Markdown from "./Markdown";
+import Flashcards from "./Flashcards";
+import Quiz from "./Quiz";
 
 const css = `
   @keyframes float-in {
@@ -65,45 +73,117 @@ const ACTIONS = [
   { id: "quiz", label: "Create Quiz", icon: "🧠", desc: "Test your knowledge" },
 ];
 
-const MOCK_RESULTS = {
-  summarize: `Chapter 4 covers Tree Data Structures — one of the most fundamental topics in CS.\n\n• Binary Trees: Each node has ≤2 children. Used in expression parsing & file systems.\n• BST (Binary Search Tree): Left < Root < Right. Enables O(log n) search.\n• AVL Trees: Self-balancing BST. Maintains height balance via rotations.\n• Heaps: Complete binary tree. Min-heap / Max-heap used in priority queues.\n\nKey complexity: Insert O(log n) · Search O(log n) · Delete O(log n)`,
-  notes: `## Chapter 4 — Tree Data Structures\n\n### 4.1 Binary Tree\n- Max 2 children per node\n- Types: Full, Complete, Perfect, Degenerate\n\n### 4.2 Binary Search Tree\n- Property: left.val < node.val < right.val\n- Operations: insert, search, inorder traversal\n\n### 4.3 AVL Tree\n- Height-balanced BST\n- Balance factor = height(left) - height(right) ∈ {-1, 0, 1}\n- Rotations: LL, RR, LR, RL\n\n### 4.4 Heap\n- Always a complete binary tree\n- Heapify: O(n), Extract-min: O(log n)`,
-  flashcards: `🃏 Card 1\nQ: What is the time complexity of BST search?\nA: O(log n) average, O(n) worst case (skewed tree)\n\n🃏 Card 2\nQ: What is the balance factor in AVL trees?\nA: height(left subtree) − height(right subtree) ∈ {-1, 0, 1}\n\n🃏 Card 3\nQ: What makes a heap different from a BST?\nA: Heap only guarantees parent > child (max-heap), not ordering between siblings\n\n🃏 Card 4\nQ: Name the 4 AVL rotation types\nA: LL (Right), RR (Left), LR (Left-Right), RL (Right-Left)`,
-  quiz: `📝 Quiz — Chapter 4\n\nQ1. Which traversal of a BST gives sorted output?\na) Preorder  b) Inorder ✓  c) Postorder  d) Level-order\n\nQ2. An AVL tree with 7 nodes has a minimum height of:\na) 2  b) 3 ✓  c) 4  d) 7\n\nQ3. In a max-heap, the root contains:\na) Smallest element  b) Median  c) Largest element ✓  d) Last inserted\n\nQ4. Which rotation fixes an LR imbalance in AVL?\na) Single right  b) Single left  c) Left then Right ✓  d) Right then Left`,
-};
+function countWords(s) {
+  const t = (s || "").trim();
+  if (!t) return 0;
+  return t.split(/\s+/).filter(Boolean).length;
+}
+
+async function extractPdfText(file, onProgress) {
+  const buf = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument({ data: buf });
+  const pdf = await loadingTask.promise;
+
+  const total = pdf.numPages || 1;
+  let out = "";
+
+  for (let i = 1; i <= total; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = (content.items || [])
+      .map((it) => (typeof it.str === "string" ? it.str : ""))
+      .join(" ");
+    out += pageText + "\n\n";
+    onProgress?.(Math.round((i / total) * 100));
+  }
+
+  return { text: out.trim(), pages: total };
+}
+
+function buildActionPrompt(actionId, extractedText, focusTopic) {
+  const clipped = (extractedText || "").slice(0, 12000);
+  const prefix = `Use ONLY the provided PDF text. If the text is incomplete, say so briefly.\n\nPDF TEXT:\n${clipped}${
+    focusTopic ? `\n\nFOCUS TOPIC:\n${focusTopic}` : ""
+  }`;
+
+  if (actionId === "summarize") return { systemPrompt: PROMPTS.summary, user: prefix };
+  if (actionId === "notes") return { systemPrompt: PROMPTS.notes, user: prefix };
+  if (actionId === "flashcards") return { systemPrompt: PROMPTS.flashcards, user: prefix };
+  if (actionId === "quiz") return { systemPrompt: PROMPTS.quiz, user: prefix };
+  return { systemPrompt: PROMPTS.chat, user: prefix };
+}
+
+function extractJsonArray(text) {
+  const s = (text || "").trim();
+  if (!s) return null;
+
+  // Remove ``` fences if the model added them
+  const noFences = s
+    .replace(/```[a-zA-Z]*\n?/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+  try {
+    const direct = JSON.parse(noFences);
+    if (Array.isArray(direct)) return direct;
+  } catch {}
+
+  // Try to isolate the first JSON array in the string
+  const m = noFences.match(/\[[\s\S]*\]/);
+  if (!m) return null;
+  try {
+    const arr = JSON.parse(m[0]);
+    return Array.isArray(arr) ? arr : null;
+  } catch {
+    return null;
+  }
+}
 
 export default function PDFPanel({ color = "#6366f1" }) {
+  const { apiKey } = useAuth();
   const [file, setFile] = useState(null);
   const [dragging, setDragging] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [activeAction, setActiveAction] = useState(null);
   const [result, setResult] = useState("");
+  const [resultIsMarkdown, setResultIsMarkdown] = useState(false);
   const [loadingAction, setLoadingAction] = useState(null);
+  const [extracted, setExtracted] = useState({ text: "", pages: 0, words: 0 });
+  const [flashcardsCards, setFlashcardsCards] = useState([]);
+  const [quizQuestions, setQuizQuestions] = useState([]);
   const inputRef = useRef(null);
 
-  // inject styles
-  if (!document.getElementById("pdf-panel-css")) {
-    const s = document.createElement("style");
-    s.id = "pdf-panel-css";
-    s.textContent = css;
-    document.head.appendChild(s);
-  }
+  useEffect(() => {
+    if (!document.getElementById("pdf-panel-css")) {
+      const s = document.createElement("style");
+      s.id = "pdf-panel-css";
+      s.textContent = css;
+      document.head.appendChild(s);
+    }
+  }, []);
 
-  const handleFile = (f) => {
+  const handleFile = async (f) => {
     if (!f) return;
     setFile(f);
     setProcessing(true);
     setProgress(0);
     setActiveAction(null);
     setResult("");
-    // simulate processing
-    let p = 0;
-    const iv = setInterval(() => {
-      p += Math.random() * 18 + 6;
-      if (p >= 100) { p = 100; clearInterval(iv); setTimeout(() => setProcessing(false), 300); }
-      setProgress(Math.min(p, 100));
-    }, 120);
+    setFlashcardsCards([]);
+    setQuizQuestions([]);
+    setResultIsMarkdown(false);
+    setExtracted({ text: "", pages: 0, words: 0 });
+
+    try {
+      const { text, pages } = await extractPdfText(f, (p) => setProgress(p));
+      const words = countWords(text);
+      setExtracted({ text, pages, words });
+    } catch (e) {
+      setResult(`Failed to read PDF: ${e?.message || "unknown error"}`);
+    }
+    setProgress(100);
+    setTimeout(() => setProcessing(false), 250);
   };
 
   const handleDrop = (e) => {
@@ -112,18 +192,99 @@ export default function PDFPanel({ color = "#6366f1" }) {
     if (f) handleFile(f);
   };
 
-  const handleAction = (id) => {
+  const handleAction = async (id) => {
     setLoadingAction(id);
     setActiveAction(id);
     setResult("");
-    setTimeout(() => {
-      setResult(MOCK_RESULTS[id]);
+    setFlashcardsCards([]);
+    setQuizQuestions([]);
+    setResultIsMarkdown(id === "summarize" || id === "notes");
+
+    try {
+      if (!apiKey?.trim()) {
+        setResult("Set your Groq API key first (top bar → Set API Key), then try again.");
+        return;
+      }
+      if (!extracted.text?.trim()) {
+        setResult("No text extracted from this PDF. Try a text-based PDF (not scanned images), or try another file.");
+        return;
+      }
+
+      const { systemPrompt, user } = buildActionPrompt(id, extracted.text);
+      const out = await callAI(apiKey, [{ role: "user", content: user }], systemPrompt);
+
+      if (id === "flashcards") {
+        const arr = extractJsonArray(out);
+        if (!arr) {
+          setResult(out);
+          return;
+        }
+        const cards = arr
+          .map((x) => ({
+            front: x?.front ?? x?.question ?? x?.q ?? "",
+            back: x?.back ?? x?.answer ?? x?.a ?? "",
+          }))
+          .filter((c) => c.front && c.back);
+        setFlashcardsCards(cards);
+        if (!cards.length) setResult(out);
+        return;
+      }
+
+      if (id === "quiz") {
+        const arr = extractJsonArray(out);
+        if (!arr) {
+          setResult(out);
+          return;
+        }
+        const qs = arr
+          .map((x) => ({
+            q: x?.q ?? x?.question ?? x?.prompt ?? "",
+            options: x?.options ?? x?.choices ?? [],
+            answer: x?.answer ?? x?.correct ?? "",
+            explanation: x?.explanation ?? x?.why ?? "",
+          }))
+          .filter((q) => q.q && Array.isArray(q.options) && q.options.length && q.answer);
+        setQuizQuestions(qs);
+        if (!qs.length) setResult(out);
+        return;
+      }
+
+      setResult(out);
+    } catch (e) {
+      setResult(`Error: ${e?.message || "request failed"}`);
+    } finally {
       setLoadingAction(null);
-    }, 900);
+    }
   };
 
-  const mockFileName = file?.name || "Data_Structures_Ch4.pdf";
-  const mockSize = file ? (file.size / 1024 / 1024).toFixed(1) + " MB" : "2.4 MB";
+  const generateFlashcardsForTopic = async (topic) => {
+    const t = (topic || "").trim();
+    setLoadingAction("flashcards");
+    setActiveAction("flashcards");
+    setResult("");
+
+    try {
+      if (!apiKey?.trim()) throw new Error("Missing Groq API key.");
+      if (!extracted.text?.trim()) throw new Error("No extracted PDF text.");
+
+      const { systemPrompt, user } = buildActionPrompt("flashcards", extracted.text, t);
+      const out = await callAI(apiKey, [{ role: "user", content: user }], systemPrompt);
+      const arr = extractJsonArray(out);
+      const cards = (arr || []).map((x) => ({
+        front: x?.front ?? x?.question ?? x?.q ?? "",
+        back: x?.back ?? x?.answer ?? x?.a ?? "",
+      })).filter((c) => c.front && c.back);
+      setFlashcardsCards(cards);
+      if (!cards.length) setResult(out);
+    } catch (e) {
+      setResult(`Error: ${e?.message || "request failed"}`);
+    } finally {
+      setLoadingAction(null);
+    }
+  };
+
+  const fileName = file?.name || "PDF.pdf";
+  const fileSize = file ? (file.size / 1024 / 1024).toFixed(1) + " MB" : "";
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -179,7 +340,7 @@ export default function PDFPanel({ color = "#6366f1" }) {
           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: `${color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>📄</div>
             <div>
-              <div style={{ fontSize: 12, color: "#e2e8f0", fontWeight: 600 }}>{mockFileName}</div>
+              <div style={{ fontSize: 12, color: "#e2e8f0", fontWeight: 600 }}>{fileName}</div>
               <div style={{ fontSize: 10, color: "#475569" }}>Extracting & analyzing…</div>
             </div>
             <div style={{ marginLeft: "auto", width: 18, height: 18, border: `2px solid ${color}`, borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
@@ -202,8 +363,13 @@ export default function PDFPanel({ color = "#6366f1" }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 40, height: 40, borderRadius: 10, background: `${color}20`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>📘</div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 12, color: "#e2e8f0", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{mockFileName}</div>
-              <div style={{ fontSize: 10, color: "#475569", marginTop: 2 }}>{mockSize} · 48 pages · 12,400 words extracted</div>
+              <div style={{ fontSize: 12, color: "#e2e8f0", fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fileName}</div>
+              <div style={{ fontSize: 10, color: "#475569", marginTop: 2 }}>
+                {fileSize}{fileSize ? " · " : ""}
+                {extracted.pages ? `${extracted.pages} pages` : "pages…"}
+                {" · "}
+                {extracted.words ? `${extracted.words.toLocaleString()} words extracted` : "extracting…"}
+              </div>
               {/* mini page distribution chart */}
               <div style={{ display: "flex", gap: 2, alignItems: "flex-end", height: 14, marginTop: 6 }}>
                 {[6, 9, 12, 8, 14, 10, 7, 11, 9, 13].map((h, i) => (
@@ -257,7 +423,23 @@ export default function PDFPanel({ color = "#6366f1" }) {
       )}
 
       {/* ── Result ── */}
-      {result && (
+      {(activeAction === "flashcards" && flashcardsCards.length > 0) || (activeAction === "quiz" && quizQuestions.length > 0) ? (
+        <div className="result-section" style={{ background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: 0, border: "1px solid rgba(255,255,255,0.07)" }}>
+          {activeAction === "flashcards" && (
+            <Flashcards
+              cards={flashcardsCards}
+              onNewTopic={(t) => generateFlashcardsForTopic(t)}
+              busy={loadingAction === "flashcards"}
+            />
+          )}
+          {activeAction === "quiz" && (
+            <Quiz
+              questions={quizQuestions}
+              onRetry={() => handleAction("quiz")}
+            />
+          )}
+        </div>
+      ) : result ? (
         <div className="result-section" style={{ background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "14px", border: "1px solid rgba(255,255,255,0.07)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
             <div style={{ fontSize: 10, color, fontWeight: 700, letterSpacing: 1 }}>
@@ -270,9 +452,15 @@ export default function PDFPanel({ color = "#6366f1" }) {
               Copy
             </button>
           </div>
-          <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{result}</div>
+          {resultIsMarkdown ? (
+            <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.8 }}>
+              <Markdown text={result} />
+            </div>
+          ) : (
+            <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>{result}</div>
+          )}
         </div>
-      )}
+      ) : null}
 
       {/* ── Empty prompt if no file ── */}
       {!file && !processing && (

@@ -18,6 +18,7 @@ import MindMapPanel from "../components/MindMapPanel";
 import CodeLabPanel from "../components/CodeLabPanel";
 import AnalyticsPanel from "../components/AnalyticsPanel";
 import InterviewPanel from "../components/InterviewPanel";
+import { features } from "../utils/features";
 
 function Btn({ onClick, children, variant = "ghost", style = {}, disabled = false, title = "" }) {
   const base = {
@@ -51,7 +52,7 @@ function Typing() {
       {[0, 1, 2].map(i => (
         <div key={i} style={{
           width: 8, height: 8, borderRadius: "50%",
-          background: ["var(--color-accent)", "#8b5cf6", "#ec4899"][i],
+          background: "var(--color-accent)",
           animation: `pulse-dot 1.2s ease-in-out ${i * .18}s infinite`,
           boxShadow: `0 0 6px var(--color-accent-glow)`,
         }} />
@@ -68,7 +69,7 @@ function Welcome({ tool, onSend, busy }) {
         <Icon name={tc?.icon} size={34} />
       </div>
       <div>
-        <div style={{ fontSize: 26, fontWeight: 800, background: "linear-gradient(135deg,var(--color-accent-light),#c4b5fd,#f0abfc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", marginBottom: 8 }}>
+        <div style={{ fontSize: 26, fontWeight: 800, color: tc?.color || "var(--color-accent)", marginBottom: 8 }}>
           {tc?.label}
         </div>
         <div style={{ fontSize: 14, color: "var(--text-secondary)", maxWidth: 380, lineHeight: 1.9 }}>
@@ -133,18 +134,34 @@ function ApiKeyModal({ onClose, onSave, current }) {
   );
 }
 
+const PANEL_META = {
+  voice: { label: "Voice Panel", tag: "Input", component: VoicePanel },
+  pdf: { label: "PDF Panel", tag: "Document", component: PDFPanel },
+  gamification: { label: "Gamification", tag: "Progress", component: GamificationPanel },
+  revision: { label: "Revision", tag: "Memory", component: RevisionPanel },
+  collab: { label: "Collab", tag: "Social", component: CollabPanel },
+  theme: { label: "Theme", tag: "UI", component: ThemeToggle },
+  mindmap: { label: "Mind Map", tag: "Visual", component: MindMapPanel },
+  codelab: { label: "Code Lab", tag: "Code", component: CodeLabPanel },
+  analytics: { label: "Analytics", tag: "Insights", component: AnalyticsPanel },
+  interview: { label: "Interview Prep", tag: "Career", component: InterviewPanel },
+};
+
 const ADVANCED_FEATURES = [
-  { id: "voice", label: "Voice Panel", desc: "Voice input & spoken AI output", color: "#6366f1", accentBg: "rgba(99,102,241,0.1)", tag: "Input", component: VoicePanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><rect x="7" y="2" width="6" height="10" rx="3" stroke="#6366f1" strokeWidth="1.4" /><path d="M4 10a6 6 0 0 0 12 0" stroke="#6366f1" strokeWidth="1.4" strokeLinecap="round" /><path d="M10 16v2" stroke="#6366f1" strokeWidth="1.4" strokeLinecap="round" /></svg>) },
-  { id: "pdf", label: "PDF Panel", desc: "Upload PDF & get AI summary", color: "#ef4444", accentBg: "rgba(239,68,68,0.1)", tag: "Document", component: PDFPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><rect x="4" y="2" width="12" height="16" rx="2" stroke="#ef4444" strokeWidth="1.3" /><path d="M7 7h6M7 10h6M7 13h4" stroke="#ef4444" strokeWidth="1.2" strokeLinecap="round" /><path d="M12 2v4h4" stroke="#ef4444" strokeWidth="1.2" /></svg>) },
-  { id: "gamification", label: "Gamification", desc: "XP, badges & progress chart", color: "#f59e0b", accentBg: "rgba(245,158,11,0.1)", tag: "Progress", component: GamificationPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M10 2l2.09 4.26L17 7.27l-3.5 3.41.83 4.82L10 13.25l-4.33 2.25.83-4.82L3 7.27l4.91-.71z" stroke="#f59e0b" strokeWidth="1.3" strokeLinejoin="round" /></svg>) },
-  { id: "revision", label: "Revision", desc: "Spaced repetition flashcards", color: "#10b981", accentBg: "rgba(16,185,129,0.1)", tag: "Memory", component: RevisionPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M4 10a6 6 0 0 1 11.66-2M16 10a6 6 0 0 1-11.66 2" stroke="#10b981" strokeWidth="1.4" strokeLinecap="round" /><path d="M16 6l-.34 2.5-2.16-.5" stroke="#10b981" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>) },
-  { id: "collab", label: "Collab", desc: "Study rooms & live chat", color: "#06b6d4", accentBg: "rgba(6,182,212,0.1)", tag: "Social", component: CollabPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="7" cy="7" r="2.5" stroke="#06b6d4" strokeWidth="1.3" /><circle cx="13" cy="7" r="2.5" stroke="#06b6d4" strokeWidth="1.3" /><path d="M3 16c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4" stroke="#06b6d4" strokeWidth="1.3" strokeLinecap="round" /></svg>) },
-  { id: "theme", label: "Theme", desc: "Dark / light & accent color", color: "#8b5cf6", accentBg: "rgba(139,92,246,0.1)", tag: "UI", component: ThemeToggle, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="10" r="3.5" stroke="#8b5cf6" strokeWidth="1.3" /><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.22 4.22l1.42 1.42M14.36 14.36l1.42 1.42M4.22 15.78l1.42-1.42M14.36 5.64l1.42-1.42" stroke="#8b5cf6" strokeWidth="1.3" strokeLinecap="round" /></svg>) },
-  { id: "mindmap", label: "Mind Map", desc: "SVG mind map builder", color: "#ec4899", accentBg: "rgba(236,72,153,0.1)", tag: "Visual", component: MindMapPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><circle cx="10" cy="10" r="2.5" stroke="#ec4899" strokeWidth="1.3" /><circle cx="3" cy="5" r="1.5" stroke="#ec4899" strokeWidth="1.2" /><circle cx="17" cy="5" r="1.5" stroke="#ec4899" strokeWidth="1.2" /><circle cx="3" cy="15" r="1.5" stroke="#ec4899" strokeWidth="1.2" /><circle cx="17" cy="15" r="1.5" stroke="#ec4899" strokeWidth="1.2" /><path d="M7.7 8.3L4.5 6.2M12.3 8.3L15.5 6.2M7.7 11.7L4.5 13.8M12.3 11.7L15.5 13.8" stroke="#ec4899" strokeWidth="1.2" /></svg>) },
-  { id: "codelab", label: "Code Lab", desc: "Code editor + AI review", color: "#f97316", accentBg: "rgba(249,115,22,0.1)", tag: "Code", component: CodeLabPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M7 6l-4 4 4 4M13 6l4 4-4 4" stroke="#f97316" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><path d="M11 4l-2 12" stroke="#f97316" strokeWidth="1.3" strokeLinecap="round" opacity=".6" /></svg>) },
-  { id: "analytics", label: "Analytics", desc: "Heatmap & topic mastery", color: "#14b8a6", accentBg: "rgba(20,184,166,0.1)", tag: "Insights", component: AnalyticsPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><path d="M3 15l4-5 4 3 4-7" stroke="#14b8a6" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /><rect x="2" y="2" width="16" height="16" rx="2" stroke="#14b8a6" strokeWidth="1.2" opacity=".3" /></svg>) },
-  { id: "interview", label: "Interview Prep", desc: "Mock interview + AI score", color: "#a78bfa", accentBg: "rgba(167,139,250,0.1)", tag: "Career", component: InterviewPanel, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><rect x="3" y="4" width="14" height="10" rx="2" stroke="#a78bfa" strokeWidth="1.3" /><path d="M7 18h6M10 14v4" stroke="#a78bfa" strokeWidth="1.3" strokeLinecap="round" /><path d="M7 8h6M7 11h4" stroke="#a78bfa" strokeWidth="1.2" strokeLinecap="round" /></svg>) },
-  { id: "featurecard", label: "Feature Card", desc: "Sidebar card UI explorer", color: "#64748b", accentBg: "rgba(100,116,139,0.1)", tag: "UI", component: FeatureCard, icon: (<svg viewBox="0 0 20 20" fill="none" width="20" height="20"><rect x="3" y="3" width="14" height="14" rx="3" stroke="#64748b" strokeWidth="1.3" /><path d="M6 8h8M6 11h5M6 14h6" stroke="#64748b" strokeWidth="1.2" strokeLinecap="round" /></svg>) },
+  ...features.map((f) => {
+    const meta = PANEL_META[f.id] || { label: f.title, tag: "Feature", component: FeatureCard };
+    return {
+      id: f.id,
+      label: meta.label,
+      desc: f.desc,
+      color: f.color,
+      accentBg: f.color + "18",
+      tag: meta.tag,
+      component: meta.component,
+      icon: <span style={{ fontSize: 18 }}>{f.icon}</span>,
+    };
+  }),
+  { id: "featurecard", label: "Feature Card", desc: "Sidebar card UI explorer", color: "#64748b", accentBg: "rgba(100,116,139,0.1)", tag: "UI", component: FeatureCard, icon: <span style={{ fontSize: 18 }}>📋</span> },
 ];
 
 function QuickActionsModal({ onAction, onClose, isMobile }) {
@@ -501,7 +518,7 @@ export default function AppPage({ onShowBookmarks, onShowStats, onShowPlanner })
                         <Markdown text={m.t} />
                       </div>
                     ) : (
-                      <div style={{ maxWidth: isMobile ? "80%" : "72%", background: "var(--color-accent-glow)", backdropFilter: "blur(16px)", border: "1px solid var(--color-accent-glow)", borderRadius: 18, borderBottomRightRadius: 4, padding: "12px 17px", color: "var(--text-primary)", fontSize: 14, lineHeight: 1.8 }}>
+                      <div style={{ maxWidth: isMobile ? "80%" : "72%", background: "var(--glass-bg)", backdropFilter: "blur(16px)", border: "1px solid var(--card-border)", borderRadius: 18, borderBottomRightRadius: 4, padding: "12px 17px", color: "var(--text-primary)", fontSize: 14, lineHeight: 1.8 }}>
                         {m.t}
                       </div>
                     )}

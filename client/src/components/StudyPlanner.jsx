@@ -1,8 +1,8 @@
 ﻿import { useState, useEffect } from "react";
 import { api } from "../utils/api";
 
-const COLORS = ["#6366f1", "#0891b2", "#059669", "#d97706", "#7c3aed", "#be185d", "#0f766e", "#b45309"];
-const PRIORITIES = { low: "#34d399", medium: "#fbbf24", high: "#f87171" };
+const COLORS = ["#ffffff", "#e5e5e5", "#d4d4d4", "#a3a3a3", "#fafafa", "#c4c4c4", "#bdbdbd", "#9ca3af"];
+const PRIORITIES = { low: "#a3a3a3", medium: "#d4d4d4", high: "#ffffff" };
 
 function PlanCard({ plan, onToggleTask, onDelete }) {
   const [expanded, setExpanded] = useState(false);
@@ -21,7 +21,7 @@ function PlanCard({ plan, onToggleTask, onDelete }) {
           </div>
           <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
             <button onClick={() => setExpanded(e => !e)} style={{ width: 26, height: 26, borderRadius: 6, background: "var(--card-bg)", border: "1px solid var(--panel-border)", cursor: "pointer", color: "var(--text-muted)", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>{expanded ? "▲" : "▼"}</button>
-            <button onClick={() => onDelete(plan._id)} style={{ width: 26, height: 26, borderRadius: 6, background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.18)", cursor: "pointer", color: "#f87171", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+            <button onClick={() => onDelete(plan._id)} style={{ width: 26, height: 26, borderRadius: 6, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.18)", cursor: "pointer", color: "#e5e5e5", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
           </div>
         </div>
         {plan.tasks.length > 0 && (
@@ -37,12 +37,12 @@ function PlanCard({ plan, onToggleTask, onDelete }) {
         )}
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
           {daysLeft !== null && (
-            <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 5, background: daysLeft < 3 ? "rgba(239,68,68,0.12)" : "var(--card-bg)", color: daysLeft < 3 ? "#f87171" : "var(--text-muted)", fontWeight: 600 }}>
+            <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 5, background: daysLeft < 3 ? "rgba(255,255,255,0.12)" : "var(--card-bg)", color: daysLeft < 3 ? "#e5e5e5" : "var(--text-muted)", fontWeight: 600 }}>
               {daysLeft < 0 ? "Overdue" : daysLeft === 0 ? "Due today" : `${daysLeft}d left`}
             </span>
           )}
           {plan.reminder?.email && (
-            <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 5, background: "rgba(99,102,241,0.12)", color: "#a5b4fc", fontWeight: 600 }}>
+            <span style={{ fontSize: 10, padding: "2px 7px", borderRadius: 5, background: "rgba(255,255,255,0.12)", color: "#e5e5e5", fontWeight: 600 }}>
               🔔 {plan.reminder.email}
             </span>
           )}
@@ -51,8 +51,8 @@ function PlanCard({ plan, onToggleTask, onDelete }) {
         {expanded && plan.tasks.length > 0 && (
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 5 }}>
             {plan.tasks.map(task => (
-              <div key={task._id} onClick={() => onToggleTask(plan._id, task._id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 8, background: task.done ? "rgba(52,211,153,0.06)" : "var(--card-bg)", border: `1px solid ${task.done ? "rgba(52,211,153,0.15)" : "var(--panel-border)"}`, cursor: "pointer" }}>
-                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1.5px solid ${task.done ? "#34d399" : "var(--text-muted)"}`, background: task.done ? "#34d399" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 9, color: "#000" }}>{task.done && "✓"}</div>
+              <div key={task._id} onClick={() => onToggleTask(plan._id, task._id)} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", borderRadius: 8, background: task.done ? "rgba(255,255,255,0.06)" : "var(--card-bg)", border: `1px solid ${task.done ? "rgba(255,255,255,0.15)" : "var(--panel-border)"}`, cursor: "pointer" }}>
+                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1.5px solid ${task.done ? "#d4d4d4" : "var(--text-muted)"}`, background: task.done ? "#d4d4d4" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 9, color: "#000" }}>{task.done && "✓"}</div>
                 <span style={{ flex: 1, fontSize: 12, color: task.done ? "var(--text-muted)" : "var(--text-secondary)", textDecoration: task.done ? "line-through" : "none" }}>{task.title}</span>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: PRIORITIES[task.priority], flexShrink: 0 }} title={task.priority} />
               </div>
@@ -102,8 +102,8 @@ function NewPlanForm({ onCreate, onCancel }) {
   const inputStyle = { width: "100%", padding: "9px 12px", borderRadius: 8, background: "var(--input-bg)", border: "1px solid var(--panel-border)", color: "var(--text-primary)", fontSize: 13, outline: "none", marginBottom: 8, boxSizing: "border-box" };
 
   return (
-    <div style={{ background: "var(--card-bg)", border: "1px solid rgba(99,102,241,0.22)", borderRadius: 14, padding: "16px" }}>
-      <div style={{ fontSize: 13, fontWeight: 700, color: "#a5b4fc", marginBottom: 12 }}>New Study Plan</div>
+    <div style={{ background: "var(--card-bg)", border: "1px solid rgba(255,255,255,0.22)", borderRadius: 14, padding: "16px" }}>
+      <div style={{ fontSize: 13, fontWeight: 700, color: "#e5e5e5", marginBottom: 12 }}>New Study Plan</div>
       <input placeholder="Subject (e.g. Data Structures)" value={subject} onChange={e => setSubject(e.target.value)} style={inputStyle} />
       <input placeholder="Description (optional)" value={description} onChange={e => setDescription(e.target.value)} style={inputStyle} />
       <input type="date" value={targetDate} onChange={e => setTargetDate(e.target.value)} style={{ ...inputStyle, color: "var(--text-muted)", colorScheme: "var(--color-scheme)" }} />
@@ -117,7 +117,7 @@ function NewPlanForm({ onCreate, onCancel }) {
           <option value="medium">Med</option>
           <option value="high">High</option>
         </select>
-        <button onClick={addTask} style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.25)", color: "#a5b4fc", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>+</button>
+        <button onClick={addTask} style={{ padding: "8px 12px", borderRadius: 8, background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", color: "#e5e5e5", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>+</button>
       </div>
       {tasks.length > 0 && (
         <div style={{ marginBottom: 10, display: "flex", flexDirection: "column", gap: 3 }}>
@@ -132,7 +132,7 @@ function NewPlanForm({ onCreate, onCancel }) {
       )}
       <div style={{ borderTop: "1px solid var(--panel-border)", paddingTop: 10, marginTop: 4, marginBottom: 10 }}>
         <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginBottom: 8 }}>
-          <input type="checkbox" checked={enableReminder} onChange={e => setEnableReminder(e.target.checked)} style={{ accentColor: "#6366f1", width: 14, height: 14 }} />
+          <input type="checkbox" checked={enableReminder} onChange={e => setEnableReminder(e.target.checked)} style={{ accentColor: "#ffffff", width: 14, height: 14 }} />
           <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>🔔 Email reminder</span>
         </label>
         {enableReminder && (
@@ -153,7 +153,7 @@ function NewPlanForm({ onCreate, onCancel }) {
       </div>
       <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
         <button onClick={onCancel} style={{ flex: 1, padding: "9px", borderRadius: 8, background: "transparent", border: "1px solid var(--panel-border)", color: "var(--text-muted)", fontSize: 12, cursor: "pointer" }}>Cancel</button>
-        <button onClick={handleCreate} disabled={!subject.trim() || saving} style={{ flex: 2, padding: "9px", borderRadius: 8, background: "linear-gradient(135deg,#6366f1,#8b5cf6)", border: "none", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 700, opacity: !subject.trim() || saving ? 0.5 : 1 }}>{saving ? "Creating…" : "Create Plan"}</button>
+        <button onClick={handleCreate} disabled={!subject.trim() || saving} style={{ flex: 2, padding: "9px", borderRadius: 8, background: "linear-gradient(135deg,#ffffff,#e5e5e5)", border: "none", color: "#fff", fontSize: 12, cursor: "pointer", fontWeight: 700, opacity: !subject.trim() || saving ? 0.5 : 1 }}>{saving ? "Creating…" : "Create Plan"}</button>
       </div>
     </div>
   );
@@ -196,7 +196,7 @@ export default function StudyPlanner({ onClose }) {
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: totalTasks > 0 ? 10 : 0 }}>
             <span style={{ fontSize: 16 }}>📚</span>
             <div style={{ flex: 1, fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>Study Planner</div>
-            <button onClick={() => setShowForm(s => !s)} style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.25)", color: "#a5b4fc", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>{showForm ? "Cancel" : "+ Plan"}</button>
+            <button onClick={() => setShowForm(s => !s)} style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)", color: "#e5e5e5", fontSize: 12, cursor: "pointer", fontWeight: 700 }}>{showForm ? "Cancel" : "+ Plan"}</button>
             <button onClick={onClose} style={{ width: 28, height: 28, borderRadius: 7, background: "var(--card-bg)", border: "1px solid var(--panel-border)", cursor: "pointer", color: "var(--text-muted)", fontSize: 15 }}>✕</button>
           </div>
           {totalTasks > 0 && <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{doneTasks}/{totalTasks} tasks done across {plans.length} plan{plans.length !== 1 ? "s" : ""}</div>}

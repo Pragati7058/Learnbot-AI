@@ -2,12 +2,12 @@
 import { api } from "../utils/api";
 
 const TOOL_COLORS = {
-  chat: "#6366f1", notes: "#0891b2", summary: "#059669",
-  flashcards: "#d97706", diagram: "#7c3aed", flowchart: "#be185d",
-  code: "#0f766e", formula: "#b45309", quiz: "#7c3aed",
+  chat: "#ffffff", notes: "#e5e5e5", summary: "#d4d4d4",
+  flashcards: "#a3a3a3", diagram: "#fafafa", flowchart: "#c4c4c4",
+  code: "#bdbdbd", formula: "#9ca3af", quiz: "#f0f0f0",
 };
 
-function StatCard({ label, value, sub, color = "#6366f1" }) {
+function StatCard({ label, value, sub, color = "#ffffff" }) {
   return (
     <div style={{ background: "var(--card-bg)", border: "1px solid var(--panel-border)", borderRadius: 12, padding: "14px 16px" }}>
       <div style={{ fontSize: 24, fontWeight: 800, color, lineHeight: 1 }}>{value ?? "—"}</div>
@@ -46,7 +46,7 @@ function ActivityDots({ data }) {
       <div style={{ fontSize: 11, color: "var(--text-muted)", marginBottom: 8, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" }}>Last 14 Days</div>
       <div style={{ display: "flex", gap: 4, alignItems: "flex-end", height: 40 }}>
         {days.map(d => (
-          <div key={d.key} title={`${d.label}: ${d.count} sessions`} style={{ flex: 1, borderRadius: 3, background: d.count > 0 ? `rgba(99,102,241,${0.2 + 0.8 * (d.count / max)})` : "var(--card-bg)", height: d.count > 0 ? `${20 + 80 * (d.count / max)}%` : "15%", minHeight: 4, cursor: "default" }} />
+          <div key={d.key} title={`${d.label}: ${d.count} sessions`} style={{ flex: 1, borderRadius: 3, background: d.count > 0 ? `rgba(255,255,255,${0.2 + 0.8 * (d.count / max)})` : "var(--card-bg)", height: d.count > 0 ? `${20 + 80 * (d.count / max)}%` : "15%", minHeight: 4, cursor: "default" }} />
         ))}
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
@@ -80,16 +80,16 @@ export default function StatsPanel({ onClose }) {
         {stats && (
           <div style={{ padding: "16px 16px 30px", display: "flex", flexDirection: "column", gap: 18 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              <StatCard label="Total Sessions" value={stats.totalSessions} color="#6366f1" />
-              <StatCard label="Bookmarks" value={stats.totalBookmarks} color="#fbbf24" />
-              <StatCard label="Starred" value={stats.starredSessions} color="#f59e0b" />
-              <StatCard label="Study Plans" value={stats.totalPlans} color="#34d399" />
+              <StatCard label="Total Sessions" value={stats.totalSessions} color="#ffffff" />
+              <StatCard label="Bookmarks" value={stats.totalBookmarks} color="#e5e5e5" />
+              <StatCard label="Starred" value={stats.starredSessions} color="#d4d4d4" />
+              <StatCard label="Study Plans" value={stats.totalPlans} color="#a3a3a3" />
             </div>
             {stats.quizTotal > 0 && (
               <div style={{ background: "var(--card-bg)", border: "1px solid var(--panel-border)", borderRadius: 12, padding: "14px 16px" }}>
                 <div style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>Quiz Performance</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-                  <div style={{ fontSize: 28, fontWeight: 800, color: "#34d399" }}>{stats.quizAvgScore}%</div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: "#e5e5e5" }}>{stats.quizAvgScore}%</div>
                   <div style={{ fontSize: 12, color: "var(--text-muted)" }}>avg over {stats.quizTotal} quiz{stats.quizTotal !== 1 ? "zes" : ""}</div>
                 </div>
               </div>
@@ -109,19 +109,19 @@ export default function StatsPanel({ onClose }) {
               <div style={{ background: "var(--card-bg)", border: "1px solid var(--panel-border)", borderRadius: 12, padding: "14px 16px" }}>
                 <div style={{ fontSize: 11, color: "var(--text-muted)", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 10 }}>Study Plan Progress</div>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 10 }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: "#34d399" }}>{stats.taskStats.done}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#e5e5e5" }}>{stats.taskStats.done}</div>
                   <div style={{ fontSize: 12, color: "var(--text-muted)" }}>/ {stats.taskStats.total} tasks completed</div>
                 </div>
                 <div style={{ height: 6, borderRadius: 3, background: "var(--panel-border)" }}>
-                  <div style={{ height: "100%", width: `${Math.round(stats.taskStats.done / stats.taskStats.total * 100)}%`, borderRadius: 3, background: "linear-gradient(90deg,#34d399,#059669)", transition: "width 0.6s ease" }} />
+                  <div style={{ height: "100%", width: `${Math.round(stats.taskStats.done / stats.taskStats.total * 100)}%`, borderRadius: 3, background: "linear-gradient(90deg,#e5e5e5,#a3a3a3)", transition: "width 0.6s ease" }} />
                 </div>
                 <div style={{ fontSize: 10, color: "var(--text-muted)", marginTop: 6 }}>{Math.round(stats.taskStats.done / stats.taskStats.total * 100)}% complete</div>
               </div>
             )}
             {stats.topTool && stats.totalSessions > 0 && (
-              <div style={{ background: "rgba(99,102,241,0.08)", border: "1px solid rgba(99,102,241,0.18)", borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
+              <div style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 12, padding: "14px 16px", textAlign: "center" }}>
                 <div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", marginBottom: 6 }}>Favourite Tool</div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: "#a5b4fc", textTransform: "capitalize" }}>{stats.topTool}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: "#e5e5e5", textTransform: "capitalize" }}>{stats.topTool}</div>
               </div>
             )}
           </div>

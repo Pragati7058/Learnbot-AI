@@ -62,7 +62,7 @@ function fixFlowchart(svg) {
     bg.setAttribute("y", "0");
     bg.setAttribute("width",  String(W));
     bg.setAttribute("height", String(H));
-    bg.setAttribute("fill",   "#0b0d18");
+    bg.setAttribute("fill",   "#070707");
   }
 }
 
@@ -96,7 +96,7 @@ function fixDiagram(svg) {
     bg.setAttribute("y", "0");
     bg.setAttribute("width",  String(W));
     bg.setAttribute("height", String(H));
-    bg.setAttribute("fill",   "#0b0d18");
+    bg.setAttribute("fill",   "#070707");
   }
 }
 
@@ -115,7 +115,7 @@ function getShapeElements(svg) {
     if (h > 60)  return;          // too tall for a node
     if (w < 40)  return;          // too small
     const fill = el.getAttribute("fill") || "";
-    if (fill === "#0b0d18" || fill === "none") return;
+    if (fill === "#070707" || fill === "none") return;
     // Skip shadow rects (slightly offset duplicates)
     results.push({ el, type: "rect", cx: x + w / 2, cy: y + h / 2, w, h });
   });
@@ -239,7 +239,7 @@ function redrawFlowchartArrows(svg, shapes, cx, startY, step) {
     line.setAttribute("y1", String(y1 + 2));
     line.setAttribute("x2", String(cx));
     line.setAttribute("y2", String(y2 - 2));
-    line.setAttribute("stroke", "#818cf8");
+    line.setAttribute("stroke", "#d4d4d4");
     line.setAttribute("stroke-width", "1.5");
     line.setAttribute("marker-end", "url(#arr)");
     svg.appendChild(line);
@@ -261,7 +261,7 @@ function enforceTextVisibility(svg) {
   svg.querySelectorAll("text, tspan").forEach(el => {
     const fill = el.getAttribute("fill");
     if (!fill || fill === "none" || fill === "black" || fill === "#000") {
-      el.setAttribute("fill", "#e2e8f0");
+      el.setAttribute("fill", "#f5f5f5");
     }
   });
 }

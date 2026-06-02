@@ -30,10 +30,7 @@ export function applyGlobalVars(acc, dark, fontSize) {
   r.setProperty("--color-accent-text", acc.text);
   r.setProperty("--color-accent-glow", acc.color + "55");
   r.setProperty("--font-size-base", fontSize + "px");
-  r.setProperty("--app-bg", dark
-    ? `linear-gradient(135deg, #0a0f1e 0%, ${acc.color}18 100%)`
-    : `linear-gradient(135deg, ${acc.light} 0%, #ffffff 100%)`
-  );
+  r.setProperty("--app-bg", dark ? "#07090f" : "#f8fafc");
   r.setProperty("--card-bg", dark ? "#0f172a" : "#ffffff");
   r.setProperty("--card-border", dark ? "#1e293b" : "#e2e8f0");
   r.setProperty("--text-primary", dark ? "#f1f5f9" : "#0f172a");
@@ -46,7 +43,6 @@ export function applyGlobalVars(acc, dark, fontSize) {
   r.setProperty("--glass-bg", dark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)");
   r.setProperty("--glass-border", dark ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.08)");
   r.setProperty("--color-scheme", dark ? "dark" : "light");
-  console.log("applyGlobalVars called — dark:", dark, "card-bg:", dark ? "#0f172a" : "#ffffff");
 }
 
 const ThemeCtx = createContext(null);
@@ -71,10 +67,7 @@ export function ThemeProvider({ children }) {
     <ThemeCtx.Provider value={{
       acc, dark, fontSize,
       setAccent: setAcc,
-      toggleDark: () => {
-        console.log("TOGGLE FIRED");
-        setDark(d => !d);
-      },
+      toggleDark: () => setDark(d => !d),
       setFontSize,
       ACCENTS,
       FONT_SIZES,
@@ -84,7 +77,7 @@ export function ThemeProvider({ children }) {
   );
 }
 
-export default function ThemeToggle({ onClose }) {
+export default function ThemeToggle() {
   const { acc, dark, fontSize, setAccent, toggleDark, setFontSize, ACCENTS, FONT_SIZES } = useTheme();
 
   const panel = {
@@ -107,7 +100,6 @@ export default function ThemeToggle({ onClose }) {
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", padding: 24, maxWidth: 420, margin: "0 auto", display: "flex", flexDirection: "column", gap: 12 }}>
 
-      {/* Live Preview */}
       <div style={{ background: dark ? "#0f172a" : "#ffffff", border: `1px solid ${dark ? "#1e293b" : "#e2e8f0"}`, borderRadius: 16, padding: 20, transition: "background .3s" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 44, height: 44, borderRadius: "50%", background: acc.light, color: acc.text, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 600 }}>MR</div>
@@ -117,10 +109,9 @@ export default function ThemeToggle({ onClose }) {
             <div style={{ display: "inline-flex", alignItems: "center", gap: 5, marginTop: 6, padding: "3px 10px", borderRadius: 20, fontSize: 11, fontWeight: 600, background: acc.light, color: acc.text }}>● Active</div>
           </div>
         </div>
-        <button style={{ marginTop: 14, padding: "8px 18px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#fff", background: acc.color }}>View Profile</button>
+        <button style={{ marginTop: 14, padding: "8px 18px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 600, color: "#fff", background: acc.color, boxShadow: `0 4px 20px ${acc.color}55` }}>View Profile</button>
       </div>
 
-      {/* Dark / Light Toggle */}
       <div style={{ ...panel, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
           <div style={{ fontSize: 13, fontWeight: 600, color: dark ? "#f1f5f9" : "#0f172a" }}>{dark ? "Dark mode" : "Light mode"}</div>
@@ -133,7 +124,6 @@ export default function ThemeToggle({ onClose }) {
         </button>
       </div>
 
-      {/* Accent Color */}
       <div style={panel}>
         <div style={labelSm}>Accent Color</div>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -147,7 +137,6 @@ export default function ThemeToggle({ onClose }) {
         </div>
       </div>
 
-      {/* Font Size */}
       <div style={panel}>
         <div style={labelSm}>Font Size</div>
         <div style={{ display: "flex", gap: 8 }}>

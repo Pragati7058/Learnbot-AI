@@ -19,12 +19,12 @@ Generate exactly 8 engineering-level flashcards. Questions should be specific an
 
 TEMPLATE (copy this structure, do not deviate):
 <svg viewBox="0 0 640 400" xmlns="http://www.w3.org/2000/svg">
-<rect width="640" height="400" fill="#0b0d18"/>
+<rect width="640" height="400" fill="#070707"/>
 <defs>
-  <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+  <marker id="ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#d4d4d4"/></marker>
 </defs>
-<rect x="0" y="0" width="640" height="36" fill="rgba(99,102,241,0.12)"/>
-<text x="320" y="18" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#a5b4fc">DIAGRAM TITLE HERE</text>
+<rect x="0" y="0" width="640" height="36" fill="rgba(255,255,255,0.12)"/>
+<text x="320" y="18" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="13" font-weight="700" fill="#e5e5e5">DIAGRAM TITLE HERE</text>
 
 <!-- NODE GRID POSITIONS (use these exact x,y values):
      Row 1 cy=90:   Node at cx=97  (x=32),  cx=267 (x=202), cx=437 (x=372)
@@ -35,29 +35,29 @@ TEMPLATE (copy this structure, do not deviate):
 
 <!-- Node 1 at Row1-Col1 (cx=97, cy=90) -->
 <rect x="29" y="71" width="130" height="44" rx="8" fill="rgba(0,0,0,0.3)"/>
-<rect x="32" y="68" width="130" height="44" rx="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
+<rect x="32" y="68" width="130" height="44" rx="8" fill="rgba(255,255,255,0.15)" stroke="#ffffff" stroke-width="1.5"/>
 <text x="97" y="90" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Label 1</text>
 
 <!-- Node 2 at Row1-Col2 (cx=267, cy=90) -->
 <rect x="199" y="71" width="130" height="44" rx="8" fill="rgba(0,0,0,0.3)"/>
-<rect x="202" y="68" width="130" height="44" rx="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
+<rect x="202" y="68" width="130" height="44" rx="8" fill="rgba(255,255,255,0.15)" stroke="#ffffff" stroke-width="1.5"/>
 <text x="267" y="90" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Label 2</text>
 
 <!-- Node 3 at Row1-Col3 (cx=437, cy=90) -->
 <rect x="369" y="71" width="130" height="44" rx="8" fill="rgba(0,0,0,0.3)"/>
-<rect x="372" y="68" width="130" height="44" rx="8" fill="rgba(52,211,153,0.15)" stroke="#34d399" stroke-width="1.5"/>
+<rect x="372" y="68" width="130" height="44" rx="8" fill="rgba(255,255,255,0.15)" stroke="#a3a3a3" stroke-width="1.5"/>
 <text x="437" y="90" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Label 3</text>
 
 <!-- Node 4 at Row2-Col2 (cx=267, cy=210) -->
 <rect x="199" y="191" width="130" height="44" rx="8" fill="rgba(0,0,0,0.3)"/>
-<rect x="202" y="188" width="130" height="44" rx="8" fill="rgba(99,102,241,0.15)" stroke="#6366f1" stroke-width="1.5"/>
+<rect x="202" y="188" width="130" height="44" rx="8" fill="rgba(255,255,255,0.15)" stroke="#ffffff" stroke-width="1.5"/>
 <text x="267" y="210" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Label 4</text>
 
 <!-- ARROWS — horizontal: x1=source_x+130, y1=source_cy, x2=target_x, y2=target_cy -->
 <!--          vertical:   x1=source_cx, y1=source_y+44, x2=target_cx, y2=target_y  -->
-<line x1="162" y1="90" x2="202" y2="90" stroke="#818cf8" stroke-width="1.5" marker-end="url(#ah)"/>
-<line x1="332" y1="90" x2="372" y2="90" stroke="#818cf8" stroke-width="1.5" marker-end="url(#ah)"/>
-<line x1="267" y1="112" x2="267" y2="188" stroke="#818cf8" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="162" y1="90" x2="202" y2="90" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="332" y1="90" x2="372" y2="90" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="267" y1="112" x2="267" y2="188" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#ah)"/>
 </svg>
 
 RULES:
@@ -72,11 +72,11 @@ RULES:
 
 TEMPLATE (copy structure exactly, only change labels and shape types as needed):
 <svg viewBox="0 0 440 580" xmlns="http://www.w3.org/2000/svg">
-<rect width="440" height="580" fill="#0b0d18"/>
+<rect width="440" height="580" fill="#070707"/>
 <defs>
-  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#818cf8"/></marker>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#d4d4d4"/></marker>
 </defs>
-<text x="220" y="22" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#a5b4fc">FLOWCHART TITLE</text>
+<text x="220" y="22" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="12" font-weight="700" fill="#e5e5e5">FLOWCHART TITLE</text>
 
 <!-- FIXED Y CENTERS — never change these: cy1=65 cy2=155 cy3=245 cy4=335 cy5=425 cy6=515 -->
 <!-- Shape half-heights: Terminal ellipse=22, Process rect=20, Decision diamond=28 -->
@@ -86,35 +86,35 @@ TEMPLATE (copy structure exactly, only change labels and shape types as needed):
 <!--   Decision(245) bottom=273 Process(335) top=315  Terminal(425) top=403 -->
 
 <!-- Shape 1: Terminal START (cy=65, bottom=87) -->
-<ellipse cx="220" cy="65" rx="65" ry="22" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
-<text x="220" y="65" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#6ee7b7">Start</text>
+<ellipse cx="220" cy="65" rx="65" ry="22" fill="rgba(255,255,255,0.15)" stroke="#e5e5e5" stroke-width="1.5"/>
+<text x="220" y="65" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#d4d4d4">Start</text>
 
-<line x1="220" y1="87" x2="220" y2="135" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="220" y1="87" x2="220" y2="135" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#arr)"/>
 
 <!-- Shape 2: Process (cy=155, top=135, bottom=175) -->
-<rect x="90" y="135" width="260" height="40" rx="8" fill="rgba(99,102,241,0.13)" stroke="#6366f1" stroke-width="1.5"/>
+<rect x="90" y="135" width="260" height="40" rx="8" fill="rgba(255,255,255,0.13)" stroke="#ffffff" stroke-width="1.5"/>
 <text x="220" y="155" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Process Step 1</text>
 
-<line x1="220" y1="175" x2="220" y2="217" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="220" y1="175" x2="220" y2="217" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#arr)"/>
 
 <!-- Shape 3: Decision (cy=245, top=217, bottom=273) -->
-<polygon points="220,217 340,245 220,273 100,245" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
-<text x="220" y="245" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="10" font-weight="500" fill="#fde68a">Condition?</text>
-<text x="234" y="296" font-family="Inter,sans-serif" font-size="10" fill="#f59e0b">Yes</text>
-<line x1="100" y1="245" x2="42" y2="245" stroke="#f59e0b" stroke-width="1.5" marker-end="url(#arr)"/>
-<text x="68" y="238" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#f59e0b">No</text>
+<polygon points="220,217 340,245 220,273 100,245" fill="rgba(255,255,255,0.12)" stroke="#a3a3a3" stroke-width="1.5"/>
+<text x="220" y="245" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="10" font-weight="500" fill="#e5e5e5">Condition?</text>
+<text x="234" y="296" font-family="Inter,sans-serif" font-size="10" fill="#a3a3a3">Yes</text>
+<line x1="100" y1="245" x2="42" y2="245" stroke="#a3a3a3" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="68" y="238" text-anchor="middle" font-family="Inter,sans-serif" font-size="10" fill="#a3a3a3">No</text>
 
-<line x1="220" y1="273" x2="220" y2="315" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="220" y1="273" x2="220" y2="315" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#arr)"/>
 
 <!-- Shape 4: Process (cy=335, top=315, bottom=355) -->
-<rect x="90" y="315" width="260" height="40" rx="8" fill="rgba(99,102,241,0.13)" stroke="#6366f1" stroke-width="1.5"/>
+<rect x="90" y="315" width="260" height="40" rx="8" fill="rgba(255,255,255,0.13)" stroke="#ffffff" stroke-width="1.5"/>
 <text x="220" y="335" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#e2e8f0">Process Step 2</text>
 
-<line x1="220" y1="355" x2="220" y2="403" stroke="#818cf8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="220" y1="355" x2="220" y2="403" stroke="#d4d4d4" stroke-width="1.5" marker-end="url(#arr)"/>
 
 <!-- Shape 5: Terminal END (cy=425, top=403) -->
-<ellipse cx="220" cy="425" rx="65" ry="22" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
-<text x="220" y="425" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#6ee7b7">End</text>
+<ellipse cx="220" cy="425" rx="65" ry="22" fill="rgba(255,255,255,0.15)" stroke="#e5e5e5" stroke-width="1.5"/>
+<text x="220" y="425" text-anchor="middle" dominant-baseline="middle" font-family="Inter,sans-serif" font-size="11" font-weight="500" fill="#d4d4d4">End</text>
 </svg>
 
 RULES:
