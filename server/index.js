@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const { buildCorsOptions } = require("./config/cors");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const cron = require("node-cron");
@@ -16,21 +17,9 @@ app.set("trust proxy", 1);
 
 connectDB();
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    if (origin === "http://localhost:5173") return callback(null, true);
-    if (origin && origin.includes("vercel.app")) return callback(null, true);
-    return callback(null, false);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
-app.use(cors(corsOptions));
+app.use(cors(buildCorsOptions()));
 app.use(express.json({ limit: "2mb" }));
-app.use(morgan("dev"));
+app.use(morgan(process.env.NODE_ENV === "production" ? "combined" : "dev"));
 
 if (process.env.NODE_ENV !== "production") {
   app.use((req, res, next) => {
